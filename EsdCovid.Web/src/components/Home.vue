@@ -1,10 +1,12 @@
 <template>
   <div id="app">
     <h1>COVID-19 Data</h1>
-    <span>Countries with no confirmed cases are not shown.</span>
+    <span class="subtext"
+      >* Countries with no confirmed cases are not shown.</span
+    >
 
     <section v-if="errored">
-      <p>
+      <p class="error">
         We're sorry, we're not able to retrieve this information at the moment,
         please try back later
       </p>
@@ -21,9 +23,9 @@
         :sort-by.sync="sortBy"
         :sort-desc.sync="sortDesc"
       >
-        <!-- <template #cell(confirmed)="data">
-          {{ data ? Number(data.unformatted).toLocaleString() : '' }}
-        </template> -->
+        <template v-slot:cell(name)="{ item, value}">
+          <b-link v-on:click="countryClicked(item.code)"> {{ value }}</b-link>
+        </template>
 
         <!-- <template #cell()="data">
           <i>{{ data }}</i>
@@ -77,6 +79,9 @@ export default {
     };
   },
   methods: {
+    countryClicked: function (countryCode) {
+      this.$router.push({ name: "country", params: { countryCode} });
+    },
     loadCountries: function () {
       HttpCovid.get("/countries")
         .then((response) => {
@@ -87,6 +92,7 @@ export default {
             .map((cd) => {
               return {
                 name: cd.name,
+                code: cd.code,
                 confirmed: cd.latest_data.confirmed,
                 death_rate: cd.latest_data.calculated.death_rate
                   ? cd.latest_data.calculated.death_rate.toFixed(2)
@@ -112,5 +118,8 @@ export default {
 <style scoped>
 .error {
   color: red;
+}
+.subtext {
+  font-style: italic;
 }
 </style>
