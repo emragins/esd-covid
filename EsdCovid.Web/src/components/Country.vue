@@ -1,68 +1,86 @@
 <template>
   <div>
-    <div class="back"><b-button v-on:click="goHome">Go Back to All Countries</b-button></div>
-    <div class="heading">{{ data.name }} Statistics</div>
-    <div class="group">
-      <span class="label">Population</span>
-      <span class="value">{{ formatNumber(data.population) }}</span>
+    <div class="back">
+      <b-button v-on:click="goHome">Go Back to All Countries</b-button>
     </div>
 
-    <div class="subheading">Rollups</div>
+    <section v-if="errored">
+      <p class="error">
+        We're sorry, we're not able to retrieve this information at the moment,
+        please try back later
+      </p>
+    </section>
 
-    <div class="group">
-      <span class="label">Cases per Million Population</span>
-      <span class="value">{{
-        formatNumber(data.latest_data.calculated.cases_per_million_population)
-      }}</span>
-    </div>
-    <div class="group">
-      <span class="label">Death Rate</span>
-      <span class="value">{{
-        formatNumber(data.latest_data.calculated.death_rate)
-      }}</span>
-    </div>
-    <div class="group">
-      <span class="label">Recovered vs Death Ratio</span>
-      <span class="value">{{
-        formatNumber(data.latest_data.calculated.recovered_vs_death_ratio)
-      }}</span>
-    </div>
-    <div class="group">
-      <span class="label">Recovery Rate</span>
-      <span class="value">{{
-        formatNumber(data.latest_data.calculated.recovery_rate)
-      }}</span>
-    </div>
+    <section v-if="loading">Loading...</section>
 
-    <div class="subheading">Case Counts</div>
-    <div class="group">
-      <span class="label">Confirmed</span>
-      <span class="value">{{ formatNumber(data.latest_data.confirmed) }}</span>
-    </div>
-    <div class="group">
-      <span class="label">Critical</span>
-      <span class="value">{{ formatNumber(data.latest_data.critical) }}</span>
-    </div>
-    <div class="group">
-      <span class="label">Deaths</span>
-      <span class="value">{{ formatNumber(data.latest_data.deaths) }}</span>
-    </div>
-    <div class="group">
-      <span class="label">Recovered</span>
-      <span class="value">{{ formatNumber(data.latest_data.recovered) }}</span>
-    </div>
+    <section v-else>
+      <div class="heading">{{ data.name }} Statistics</div>
+      <div class="group">
+        <span class="label">Population</span>
+        <span class="value">{{ formatNumber(data.population) }}</span>
+      </div>
 
-    <!-- <div class="group">
+      <div class="subheading">Rollups</div>
+
+      <div class="group">
+        <span class="label">Cases per Million Population</span>
+        <span class="value">{{
+          formatNumber(data.latest_data.calculated.cases_per_million_population)
+        }}</span>
+      </div>
+      <div class="group">
+        <span class="label">Death Rate</span>
+        <span class="value">{{
+          formatNumber(data.latest_data.calculated.death_rate)
+        }}</span>
+      </div>
+      <div class="group">
+        <span class="label">Recovered vs Death Ratio</span>
+        <span class="value">{{
+          formatNumber(data.latest_data.calculated.recovered_vs_death_ratio)
+        }}</span>
+      </div>
+      <div class="group">
+        <span class="label">Recovery Rate</span>
+        <span class="value">{{
+          formatNumber(data.latest_data.calculated.recovery_rate)
+        }}</span>
+      </div>
+
+      <div class="subheading">Case Counts</div>
+      <div class="group">
+        <span class="label">Confirmed</span>
+        <span class="value">{{
+          formatNumber(data.latest_data.confirmed)
+        }}</span>
+      </div>
+      <div class="group">
+        <span class="label">Critical</span>
+        <span class="value">{{ formatNumber(data.latest_data.critical) }}</span>
+      </div>
+      <div class="group">
+        <span class="label">Deaths</span>
+        <span class="value">{{ formatNumber(data.latest_data.deaths) }}</span>
+      </div>
+      <div class="group">
+        <span class="label">Recovered</span>
+        <span class="value">{{
+          formatNumber(data.latest_data.recovered)
+        }}</span>
+      </div>
+
+      <!-- <div class="group">
           <span class="label">timeline</span>
       <span class="value">{{data.timeline}}</span>: (455) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, …]
         </div> -->
-    <!-- <div class="group">
+      <!-- <div class="group">
           <span class="label">today</span>
       <span class="value">{{data.today}}</span>: {deaths: 539, confirmed: 39273}
         </div> -->
-    <div class="updatedat">
-      <span>Updated At {{ new Date(data.updated_at).toLocaleString() }}</span>
-    </div>
+      <div class="updatedat">
+        <span>Updated At {{ new Date(data.updated_at).toLocaleString() }}</span>
+      </div>
+    </section>
   </div>
 </template>
 
@@ -73,6 +91,7 @@ export default {
   data() {
     return {
       loading: true,
+      errored: false,
       data: null,
     };
   },
@@ -104,9 +123,9 @@ export default {
 </script>
 
 <style scoped>
-.back{
-align-content: center;
-padding: 10px;
+.back {
+  align-content: center;
+  padding: 10px;
 }
 .heading {
   font-size: 1.5em;
