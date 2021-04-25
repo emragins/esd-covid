@@ -66,6 +66,7 @@ namespace EsdCovid.Functions
         public async Task Clear()
         {
             await database.DeleteAsync();
+            _instance = null;
         }
 
         private async Task CreateDatabaseIfNotExistsAsync()

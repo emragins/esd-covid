@@ -4,8 +4,8 @@
 
   <section v-else>
     <div>
-      <h3>Common Queries</h3>
-      <p>{{ queries }}</p>
+      <span class="queriesHeading">Common Queries</span> 
+      <p class="queriesText">{{ queries }}</p>
     </div>
   </section>
 </template>
@@ -36,3 +36,12 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.queriesHeading {
+  font-weight: bold;
+}
+.queriesText {
+    margin-left: 10px;
+    }
+</style>

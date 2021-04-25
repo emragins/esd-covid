@@ -141,12 +141,17 @@ export default {
         return cd.name.toLowerCase().startsWith(value.toLowerCase());
       });
       if (toCountry.length > 0) {
-        HttpQueries.get("/SaveQuery", {
-          params: { text: toCountry[0].name, code: "public" },
-        }).catch((e) => console.log(e));
-
+        this.saveQuery(toCountry[0].name);
+        // no need to wait, this is SPA!
         this.navigateToCountryCode(toCountry[0].code);
       }
+    },
+    saveQuery(countryName) {
+      HttpQueries.post(
+        "/SaveQuery",
+        { text: countryName },
+        { params: { code: "public" } }
+      ).catch((e) => console.log(e));
     },
   },
   mounted() {
