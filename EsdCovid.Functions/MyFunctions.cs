@@ -21,18 +21,23 @@ namespace EsdCovid.Functions
             _queriesRepo = queriesRepo;
         }
 
+        // really, this should be 'post' only since it modifies server state
+        // but for simplicity allow 'get' to bypass CORS isues.
         [FunctionName("SaveQuery")]
         public async Task<IActionResult> SaveQuery(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
+            string text = req.Query["text"];
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
-            var text = (string)(data?.text?.ToString());
-
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+                dynamic data = JsonConvert.DeserializeObject(requestBody);
+                text = (string)(data?.text?.ToString());
+            }
             if (string.IsNullOrWhiteSpace(text))
             {
                 return new BadRequestObjectResult("expected request body to contain 'text' as a json field");
