@@ -66,17 +66,17 @@ Schema is a single table:
 ```
 Queries
 
-id (string)
-QueryText (string)
-NumTimesHit (int)
-LastUpdated (DateTime)
+id (string) - required by database
+QueryText (string) - country name
+NumTimesHit (int) - increments each time somebody hits it
+LastUpdated (DateTime) - self-explanitory. Not used.
 ```
 
 ## Developing
 
 ### Website
 
-See EsdCovid.Web\readme.md
+run `npm run serve`
 
 ### Functions
 
@@ -86,7 +86,7 @@ Set the startup project to be functions, and debug as "normal".  You can execute
 
 ## Deployment
 
-CI/CD is done with GitHub Actions.  GitHub Actions uses a yaml-based pipeline not unlike azure pipelines.  They can be found in .github/workflows.
+CI/CD is done with GitHub Actions.  GitHub Actions uses a yaml-based pipeline not unlike azure pipelines.  They can be found in `.github/workflows`.
 
 Deployment is completely automated the web and "api" layer.
 
@@ -103,3 +103,13 @@ _Note: Azure DevOps recently changed their pricing model and it no longer seems 
 Generate Functions publish profile
 
 > az webapp deployment list-publishing-profiles --name esdcovid-functions --resource-group ESD-Assessment --subscription [subscriptionid] --xml
+
+## Security, Limitations
+
+Secrets are handled either via GitHub secrets or configured manually via the Azure DevOps portal.
+
+There is no throttling on requests, so it's open to DDoS attack unless Azure prevents it automatically.  
+
+Clearing the History is open, too, but the data is not valuable, so not a big deal.
+
+There is no limit or validations on query text (but it is parameterized when inserted to prevent SQL Injection).

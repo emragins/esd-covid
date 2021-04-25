@@ -4,7 +4,7 @@
 
   <section v-else>
     <div>
-      <span class="queriesHeading">Common Queries</span> 
+      <span class="queriesHeading">Top 5 Queries</span> 
       <p class="queriesText">{{ queries }}</p>
     </div>
   </section>

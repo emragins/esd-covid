@@ -46,6 +46,7 @@ namespace EsdCovid.Functions
             else
             {
                 query.NumTimesHit++;
+                query.LastUpdated = DateTime.UtcNow;
             }
 
             try
