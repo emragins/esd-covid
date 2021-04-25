@@ -1,9 +1,6 @@
 <template>
   <div id="app">
     <h1>COVID-19 Data</h1>
-    <span class="subtext"
-      >* Countries with no confirmed cases are not shown.</span
-    >
 
     <section v-if="errored">
       <p class="error">
@@ -15,6 +12,13 @@
     <section v-if="loading">Loading...</section>
 
     <section v-else>
+      <span class="subtext">
+        * Countries with no confirmed cases are not shown.
+      </span>
+      <autocomplete
+        :search="search"
+        @submit="onAutocompleteSubmit"
+      ></autocomplete>
       <b-table
         striped
         hover
@@ -23,8 +27,10 @@
         :sort-by.sync="sortBy"
         :sort-desc.sync="sortDesc"
       >
-        <template v-slot:cell(name)="{ item, value}">
-          <b-link v-on:click="countryClicked(item.code)"> {{ value }}</b-link>
+        <template v-slot:cell(name)="{ item, value }">
+          <b-link v-on:click="navigateToCountryCode(item.code)">
+            {{ value }}</b-link
+          >
         </template>
 
         <!-- <template #cell()="data">
@@ -48,7 +54,8 @@
 </template>
 
 <script>
-import { HttpCovid } from "../lib/http";
+import { HttpCovid, HttpQueries } from "../lib/http";
+import Autocomplete from "@trevoreyre/autocomplete-vue";
 export default {
   name: "Home",
   data() {
@@ -78,16 +85,18 @@ export default {
       errored: false,
     };
   },
+  components: {
+    Autocomplete,
+  },
   methods: {
-    countryClicked: function (countryCode) {
-      this.$router.push({ name: "country", params: { countryCode} });
+    navigateToCountryCode: function (countryCode) {
+      this.$router.push({ name: "country", params: { countryCode } });
     },
     loadCountries: function () {
       HttpCovid.get("/countries")
         .then((response) => {
           this.loading = false;
-          this.countryData = response.data.data;
-          let data = this.countryData
+          let data = response.data.data
             .filter((cd) => cd.latest_data.confirmed > 0)
             .map((cd) => {
               return {
@@ -100,6 +109,7 @@ export default {
               };
             });
 
+          this.countryData = data;
           this.tableData = data;
           //console.log('this.countryData', this.countryData);
         })
@@ -107,6 +117,27 @@ export default {
           this.errored = true;
           console.log(e);
         });
+    },
+    search(input) {
+      if (!input || input.length < 2) return [];
+
+      if (this.countryData)
+        return this.countryData
+          .filter((cd) => {
+            return cd.name.toLowerCase().startsWith(input.toLowerCase());
+          })
+          .map((cd) => cd.name);
+    },
+    onAutocompleteSubmit(value) {
+      // value will be undefined if nothing was selected
+      if (!value) return;
+      console.log(value);
+      var toCountry = this.countryData.filter((cd) => {
+        return cd.name.toLowerCase().startsWith(value.toLowerCase());
+      });
+      if (toCountry.length > 0) {
+        this.navigateToCountryCode(toCountry[0].code);
+      }
     },
   },
   mounted() {
