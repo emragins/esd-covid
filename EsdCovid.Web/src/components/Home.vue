@@ -19,6 +19,7 @@
         :search="search"
         @submit="onAutocompleteSubmit"
       ></autocomplete>
+      <query-history />
       <b-table
         striped
         hover
@@ -56,6 +57,7 @@
 <script>
 import { HttpCovid, HttpQueries } from "../lib/http";
 import Autocomplete from "@trevoreyre/autocomplete-vue";
+import QueryHistory from "./QueryHistory";
 export default {
   name: "Home",
   data() {
@@ -87,6 +89,7 @@ export default {
   },
   components: {
     Autocomplete,
+    QueryHistory,
   },
   methods: {
     navigateToCountryCode: function (countryCode) {
@@ -95,7 +98,6 @@ export default {
     loadCountries: function () {
       HttpCovid.get("/countries")
         .then((response) => {
-          this.loading = false;
           let data = response.data.data
             .filter((cd) => cd.latest_data.confirmed > 0)
             .map((cd) => {
@@ -111,6 +113,7 @@ export default {
 
           this.countryData = data;
           this.tableData = data;
+          this.loading = false;
           //console.log('this.countryData', this.countryData);
         })
         .catch((e) => {
@@ -138,12 +141,10 @@ export default {
         return cd.name.toLowerCase().startsWith(value.toLowerCase());
       });
       if (toCountry.length > 0) {
-        HttpQueries.post(
-          "/SaveQuery",
-          { text: toCountry[0].name },
-          { params: { code: "public" } }
-        ).catch((e) => console.log(e));
-        
+        HttpQueries.get("/SaveQuery", {
+          params: { text: toCountry[0].name, code: "public" },
+        }).catch((e) => console.log(e));
+
         this.navigateToCountryCode(toCountry[0].code);
       }
     },

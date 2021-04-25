@@ -7,9 +7,11 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Cors;
 
 namespace EsdCovid.Functions
 {
+    [EnableCors]
     public class MyFunctions
     {
         private readonly Data _data;
