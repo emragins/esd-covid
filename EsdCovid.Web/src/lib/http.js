@@ -9,5 +9,9 @@ if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
 }
 
 export const HttpCovid = axios.create({
-  baseURL: 'https://corona-api.com',
+  baseURL: "https://corona-api.com",
+});
+
+export const HttpQueries = axios.create({
+  baseURL: "https://esdcovid-functions.azurewebsites.net/api/",
 });

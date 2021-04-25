@@ -132,10 +132,18 @@ export default {
       // value will be undefined if nothing was selected
       if (!value) return;
       console.log(value);
+
+      // get the code for the chosen country and navigate
       var toCountry = this.countryData.filter((cd) => {
         return cd.name.toLowerCase().startsWith(value.toLowerCase());
       });
       if (toCountry.length > 0) {
+        HttpQueries.post(
+          "/SaveQuery",
+          { text: toCountry[0].name },
+          { params: { code: "public" } }
+        ).catch((e) => console.log(e));
+        
         this.navigateToCountryCode(toCountry[0].code);
       }
     },
