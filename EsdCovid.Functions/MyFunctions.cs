@@ -90,9 +90,22 @@ namespace EsdCovid.Functions
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
-            await _data.Clear();
+            // I realized as I was falling asleep that there was a bug with this implementation.
+            // It seems unfair to fix it, but if you're poking through the code and decide to
+            // call the function, it breaks the historical queries functionality due a combination of
+            // null'ing out `_instance` and dependency injection. (DI came after I wrote this).
+            // As this function was built to facilitate testing or "administrative" use early on,
+            // it seems best to comment it rather than let you put the app in a broken state. :)
+            //
+            // As for this comment/commit happening around 3:00am (if you're looking), I've unfortunately
+            // been waking at this hour pretty consistently for a while now. :(
+            //
+            // - EMR 2021/04/26
 
-            return new OkResult();
+            //await _data.Clear();
+
+            return new ForbidResult();
+            //return new OkResult();
         }
     }
 }
