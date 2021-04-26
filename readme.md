@@ -7,23 +7,23 @@ A mobile-first web site for viewing covid statistics by country.
 
 ### Checklist
 
--[x] shows covid-19 stats
--[x] is a website
--[x] mobile friendly
--[x] user friendly
--[x] user can query (via an autocomplete filter)
--[x] user can view query history
--[x] uses ci/cd
--[x] uses git
--[x] uses azure devops
--[x] front-end of my choice (vue)
--[x] C# backend
--[x] has a database
--[x] schema "exposed" below 
--[ ] has unit tests
+- [x] shows covid-19 stats
+- [x] is a website
+- [x] mobile friendly
+- [x] user friendly
+- [x] user can query (via an autocomplete filter)
+- [x] user can view query history
+- [x] uses ci/cd
+- [x] uses git
+- [x] uses azure devops
+- [x] front-end of my choice (vue)
+- [x] C# backend
+- [x] has a database
+- [x] schema "exposed" below 
+- [ ] has unit tests
 * Web: Could hypothetically extract some of the filter/map functions or do component level testing, but it's a simple UI and easy to test.
 * C#: Very little worth unit testing -- it's a thin layer between HTTP and CosmosDB and 80% of the test code would just be mocks. Not much value there.
--[ ] has integration tests
+- [ ] has integration tests
 * There would be a lot more value here than unit tests.  Automation could be done with something like selenium, cypress, etc.  Good test cases would be:
     * Load site, assert elements appear and have data.
     * Load site, click on country name, assert country view data appears as expected
